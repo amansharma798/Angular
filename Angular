@@ -1,0 +1,271 @@
+<html>
+
+<body>
+  In ChildComp: From parent Comp: {{inChild}}
+
+  <div>
+    <button (click)='onclick()'>Trigger for the Output</button>
+  </div>
+
+</body>
+
+</html>import { Component, EventEmitter, Input, Output } from "@angular/core";
+
+@Component({
+  selector: "child-app",
+  templateUrl: "./app.child.html"
+})
+export class ChildComponent {
+  @Input()
+  inChild: String;
+
+  @Output()
+  notify: EventEmitter<string> = new EventEmitter<string>();
+
+  onclick(): void {
+    this.notify.emit("Message from Child");
+  }
+}
+p {
+  font-family: Lato;
+}import { Component, VERSION } from '@angular/core';
+
+@Component({
+  selector: 'my-app',
+  templateUrl: './app.component.html',
+  styleUrls: [ './app.component.css' ]
+})
+export class AppComponent  {
+  name = 'Angular ' + VERSION.major;
+}<html>
+
+<body>
+  <form #empForm=ngForm (ngSubmit)=getData(empForm)>
+    <table>
+      <tr>
+        <td>Employee ID:
+        </td>
+        <td>
+          <input required type="text" name="eId" id="eId" [(ngModel)]="emp.eId"  class="form-control" #eId="ngModel" placeHolder="Enter EMPID">
+          <div style="color:red" *ngIf="eId.errors && (eId.dirty ||eId.touched)">
+            <p *ngIf="eId.errors.required"> Employee ID is Mandatory
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Employee Name:
+        </td>
+        <td>
+          <input required type="text" name="eName" id="eName" [(ngModel)]="emp.eName"  class="form-control" #eName="ngModel" placeHolder="Enter EMPName">
+          <div style="color:red" *ngIf="eName.errors && (eName.dirty ||eName.touched)">
+            <p *ngIf="eName.errors.required"> Employee Name is Mandatory
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Employee Salary:
+        </td>
+        <td>
+          <input required type="text" name="eSalary" id="eSalary" [(ngModel)]="emp.eSalary"  class="form-control" #eSalary="ngModel" placeHolder="Enter EMPName">
+          <div style="color:red" *ngIf="eSalary.errors && (eSalary.dirty ||eSalary.touched)">
+            <p *ngIf="eSalary.errors.required"> Employee Salary is Mandatory
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Employee Type:
+        </td>
+        <td>
+          <input required type="radio" name="eType" id="eType" [(ngModel)]="emp.eType"  class="form-control" #eType="ngModel" value="Permanent"/>Permanent
+
+          <input required type="radio" name="eType" id="eType" [(ngModel)]="emp.eType"  class="form-control" #eType="ngModel" value="Contract"/>Contract
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          Select Department
+        </td>
+        <td>
+          <select required name="edep" id="edep" [(ngModel)]=emp.eDepartment #depControl=ngModel>
+            <option *ngFor="let dep of department" [value]=dep.dId>{{dep.dName}}</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <input type="submit" value="Add Emp"/>
+        </td>
+      </tr>
+    </table>
+  </form>
+  Emp Details are : {{empForm.value |json}}
+
+</body>
+
+</html>import { Component } from "@angular/core";
+import { NgForm } from "@angular/forms";
+
+import { Employee } from "./app.employee";
+import { Department } from "./Department";
+
+@Component({
+  selector: "emp-app",
+  templateUrl: "./app.empcomponent.html"
+})
+export class AppEmpComponent {
+  emp: Employee = {
+    eId: null,
+    eName: null,
+    eSalary: null,
+    eType: null,
+    eDepartment: null
+  };
+
+  department: Department[] = [
+    { dId: 1, dName: "Java" },
+    { dId: 2, dName: "Android" },
+    { dId: 3, dName: "MainFrame" },
+    { dId: 4, dName: "Cloud" }
+  ];
+
+  getData(empForm: NgForm): void {
+    console.log(empForm.value);
+  }
+}export class Employee {
+  eId: number;
+  eName: string;
+  eSalary: number;
+  eType: string;
+  eDepartment: string;
+}import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { FormsModule } from "@angular/forms";
+
+import { AppComponent } from "./app.component";
+import { HelloComponent } from "./hello.component";
+import { AppEmpComponent } from "./app.empcomponent";
+import { ChildComponent } from "./app.child";
+
+@NgModule({
+  imports: [BrowserModule, FormsModule],
+  declarations: [AppComponent, HelloComponent, AppEmpComponent, ChildComponent],
+  bootstrap: [AppComponent]
+})
+export class AppModuexport class Department {
+  dId: number;
+  dName: string;
+}import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'hello',
+  template: `<h1>Hello {{name}}!</h1>`,
+  styles: [`h1 { font-family: Lato; }`]
+})
+export class HelloComponent  {
+  @Input() name: string;
+}
+
+le {}
+
+
+<html>
+  <head>
+    <title>Angular App</title>
+  </head>
+  <body>
+  <my-app>loading</my-app>
+  </body>
+</html>
+import './polyfills';
+
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+
+import { AppModule } from './app/app.module';
+
+platformBrowserDynamic().bootstrapModule(AppModule).then(ref => {
+  // Ensure Angular destroys itself on hot reloads.
+  if (window['ngRef']) {
+    window['ngRef'].destroy();
+  }
+  window['ngRef'] = ref;
+
+  // Otherwise, log the boot error
+}).catch(err => console.error(err));
+/**
+ * This file includes polyfills needed by Angular and is loaded before the app.
+ * You can add your own extra polyfills to this file.
+ *
+ * This file is divided into 2 sections:
+ *   1. Browser polyfills. These are applied before loading ZoneJS and are sorted by browsers.
+ *   2. Application imports. Files imported after ZoneJS that should be loaded before your main
+ *      file.
+ *
+ * The current setup is for so-called "evergreen" browsers; the last versions of browsers that
+ * automatically update themselves. This includes Safari >= 10, Chrome >= 55 (including Opera),
+ * Edge >= 13 on the desktop, and iOS 10 and Chrome on mobile.
+ *
+ * Learn more in https://angular.io/docs/ts/latest/guide/browser-support.html
+ */
+
+/***************************************************************************************************
+ * BROWSER POLYFILLS
+ */
+
+/** IE9, IE10 and IE11 requires all of the following polyfills. **/
+// import 'core-js/es6/symbol';
+// import 'core-js/es6/object';
+// import 'core-js/es6/function';
+// import 'core-js/es6/parse-int';
+// import 'core-js/es6/parse-float';
+// import 'core-js/es6/number';
+// import 'core-js/es6/math';
+// import 'core-js/es6/string';
+// import 'core-js/es6/date';
+// import 'core-js/es6/array';
+// import 'core-js/es6/regexp';
+// import 'core-js/es6/map';
+// import 'core-js/es6/set';
+
+/** IE10 and IE11 requires the following for NgClass support on SVG elements */
+// import 'classlist.js';  // Run `npm install --save classlist.js`.
+
+/** IE10 and IE11 requires the following to support `@angular/animation`. */
+// import 'web-animations-js';  // Run `npm install --save web-animations-js`.
+
+
+/** Evergreen browsers require these. **/
+// import 'core-js/es6/reflect';
+// import 'core-js/es7/reflect';
+
+
+/**
+ * Web Animations `@angular/platform-browser/animations`
+ * Only required if AnimationBuilder is used within the application and using IE/Edge or Safari.
+ * Standard animation support in Angular DOES NOT require any polyfills (as of Angular 6.0).
+ */
+// import 'web-animations-js';  // Run `npm install --save web-animations-js`.
+
+
+
+/***************************************************************************************************
+ * Zone JS is required by Angular itself.
+ */
+import 'zone.js/dist/zone';  // Included with Angular CLI.
+
+
+/***************************************************************************************************
+ * APPLICATION IMPORTS
+ */
+
+/**
+ * Date, currency, decimal and percent pipes.
+ * Needed for: All but Chrome, Firefox, Edge, IE11 and Safari 10
+ */
+// import 'intl';  // Run `npm install --save intl`.
+/* Add application styles & imports to this file! */
